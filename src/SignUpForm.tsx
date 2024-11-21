@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, CircularProgress, Typography } from '@mui/material';
-
+import { Box, TextField, Button, CircularProgress, Typography, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpForm: React.FC = () => {
-  const [name, setName] = useState('');
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -14,11 +15,21 @@ const SignUpForm: React.FC = () => {
     setError('');
     setLoading(true);
 
-    // Simulate API call
+    if (password !== confirmPassword) {
+      setLoading(false);
+      setError('Passwords do not match');
+      return;
+    }
+
     setTimeout(() => {
       setLoading(false);
       if (email.includes('@') && password.length >= 6) {
-        alert(`Account created for: ${name} (${email})`);
+        // Save data to localStorage
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userPassword', password);
+
+        alert(`Account created for: ${email}`);
+        navigate('/?'); // Redirect to login page
       } else {
         setError('Invalid email or password must be at least 6 characters');
       }
@@ -26,54 +37,93 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSignUp}>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        label="Full Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-      />
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        label="Email Address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-        error={!!error}
-        helperText={error && "Please enter a valid email"}
-      />
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        type="password"
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-        error={!!error}
-        helperText={error && "Password must be at least 6 characters"}
-      />
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
+    <Container maxWidth="sm">
+      <Box
+        component="form"
+        onSubmit={handleSignUp}
         sx={{
-          mt: 2,
-          py: 1.5,
-          backgroundColor: '#4CAF50',
-          '&:hover': { backgroundColor: '#45A049' },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 3,
+          boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: 'white',
         }}
-        disabled={loading}
       >
-        {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
-      </Button>
-    </Box>
+        {/* Added motivational or guiding text */}
+        <Typography
+        fontWeight="bold"
+          variant="h6"
+          textAlign="center"
+          color="#1d1e2b"
+          mb={2}
+        >
+          Silahkan buat akun terlebih dahulu.
+        </Typography>
+
+        <Typography variant="h4" gutterBottom>
+          Sign Up
+        </Typography>
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          margin="normal"
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          fullWidth
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          margin="normal"
+        />
+        <TextField
+          label="Confirm Password"
+          variant="outlined"
+          fullWidth
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          margin="normal"
+        />
+        {error && <Typography color="error" variant="body2">{error}</Typography>}
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+          sx={{ marginTop: 2 }}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
+        </Button>
+      </Box>
+      {/* Copyright positioned at the bottom-left */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0, // Tetap di kiri bawah
+          textAlign: 'center',
+          backgroundColor: '#ffffff',
+          py: 1,
+          px: 3,
+          boxShadow: '0px -2px 6px rgba(0, 0, 0, 0.0)',
+          width: '46vw', // Menggunakan 50% dari lebar viewport
+        }}
+      >
+        <Typography variant="body2" color="#000000">
+          © {new Date().getFullYear()} Muse Academy. All rights reserved.
+        </Typography>
+      </Box>
+    </Container>
   );
 };
 

@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, CircularProgress, Typography } from '@mui/material';
+import { Box, TextField, Button } from '@mui/material';
 
 const SignInForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleSignIn = async (event: React.FormEvent) => {
+  const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();
-    setError('');
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      if (email === 'test@example.com' && password === 'password123') {
-        alert(`Logged in as: ${email}`);
-      } else {
-        setError('Invalid email or password');
-      }
-    }, 2000);
+    alert(`Logged in as: ${email}`);
   };
 
   return (
@@ -33,8 +20,6 @@ const SignInForm: React.FC = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-        error={!!error}
-        helperText={error && "Please enter a valid email and password"}
       />
       <TextField
         margin="normal"
@@ -45,7 +30,6 @@ const SignInForm: React.FC = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         sx={{ backgroundColor: '#fff', borderRadius: 1 }}
-        error={!!error}
       />
       <Button
         type="submit"
@@ -57,9 +41,8 @@ const SignInForm: React.FC = () => {
           backgroundColor: '#4CAF50',
           '&:hover': { backgroundColor: '#45A049' },
         }}
-        disabled={loading}
       >
-        {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+        Sign In
       </Button>
     </Box>
   );
